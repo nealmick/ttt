@@ -25,7 +25,6 @@ def move(request):
 
     board = createBoard()
     board = updateBoard(board, url)
-    printBoard(board)
     board =  getMove(board)
     printBoard(board)
     r = getResponse(board)
@@ -48,12 +47,75 @@ def getResponse(board):
 
 def getMove(board):
 
-    print('getting move')
 
+    moves = possibleMoves(board)
 
-    randMove(board)
+    #randMove(board)
+    winner = won(board)
+
+    
+
 
     return board
+
+
+
+
+
+
+def won(board):
+    winner = '_'
+    #horizontal
+    teams = ['x','o']
+    for team in teams:
+        c=0
+        for foo in board:
+            c+=1
+            count =0
+            for oof in foo:
+                if oof == team:
+                    count+=1
+
+            if count == 3:
+                print('winner ',team,' horizontal on: ',c-1)
+                winner=team
+
+    #vertical
+    teams = ['x','o']
+    for team in teams:
+        for foo in range(0,3):
+            count =0
+            for oof in range(0,3):
+                if board[oof][foo] == team:
+                        count+=1
+            if count == 3:
+                    print('winner ',team,' vertical on: ',foo)
+                    winner=team
+    #diagonal
+    teams = ['x','o']
+    for team in teams:
+        if board[0][0]==team and board[1][1]==team and board[2][2]==team:
+            print('winner ',team,' diagonal on: 0')
+            winner=team
+        if board[2][0]==team and board[1][1]==team and board[0][2]==team:
+            print('winner ',team,' diagonal on: 1')
+            winner=team
+
+    return winner
+
+
+
+
+def possibleMoves(board):
+    moves = []
+    for foo in range(0,3):
+        for oof in range(0,3):
+            if(board[foo][oof]=='_'):
+                moves.append([foo,oof])
+
+    return moves
+
+
 
 
 def randMove(board):
