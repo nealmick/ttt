@@ -1,0 +1,216 @@
+
+
+
+console.log('tictactoe')
+
+
+let x = 3;
+let y = 3;
+
+
+let board = [];
+createBoard(board,x,y)
+
+
+console.log(board)
+
+
+
+
+    
+
+printBoard()
+
+
+
+
+
+function getMove(board){
+    let fasdf = prepareSend(board)
+    $.ajax(
+      {
+          type:"GET",
+          url: "/ttt/move/",
+          async: true,
+          
+          dataType: 'json',
+          data:{
+            asdf: String(fasdf),
+          },
+          success: function(asdf) {
+            let fasdf = asdf.asdf
+  
+            
+            console.log('response:',fasdf)
+            updateBoard(board,fasdf)
+            printBoard()
+            updateView(board)
+
+            //board.move(fasdf[0]+fasdf[1].toUpperCase()+'-'+ fasdf[2]+fasdf[3].toUpperCase() )
+            
+  
+        }
+      })
+      return fasdf 
+  
+  }
+
+
+
+function updateView(board){
+    count=1;
+    for(foo=0;foo<x;foo++){
+        for(oof=0;oof<y;oof++){
+            if(board[foo][oof]!='_'){
+                document.getElementById("box"+String(count)).innerText = board[foo][oof]
+            }
+            count++
+
+        }
+    }
+
+
+}
+
+function updateBoard(board,fasdf){
+
+    let counter = 0;
+    for(foo=0;foo<x;foo++){
+        for(oof=0;oof<y;oof++){
+
+            if(fasdf[counter]!='_'){
+                board[foo][oof]=fasdf[counter]
+            }
+            counter++
+            
+        }
+    }
+
+    return board
+}
+
+function prepareSend(board){
+    let sendString = '';
+
+    for(foo=0;foo<x;foo++){
+       
+        for(oof=0;oof<y;oof++){
+            sendString+=board[foo][oof]
+        }
+
+    }
+
+    return sendString
+
+
+}
+
+
+
+
+
+
+function printBoard(){
+    let pString = "";
+    let bigString ="";
+    for(foo=0;foo<x;foo++){
+       
+        for(oof=0;oof<y;oof++){
+            pString+=board[foo][oof]
+        }
+        bigString+=pString+'\n'
+        pString = "";
+    }
+    console.log(bigString)
+}
+
+function createBoard(board,x,y){
+    
+    for(foo=0;foo<x;foo++){
+        board.push([]);
+        for(oof=0;oof<y;oof++){
+            board[foo].push('_')
+        }
+    }
+    return board
+}
+
+
+function box1(){
+    if (board[0][0]=='_'){
+        document.getElementById("box1").innerText = 'x'
+        board[0][0]='x'
+        printBoard()
+        getMove(board)
+    }
+}
+
+function box2(){
+    if (board[0][1]=='_'){
+      document.getElementById("box2").innerText = 'x'
+        board[0][1]='x'
+        printBoard()
+        getMove(board)
+    }
+}
+function box3(){
+    if (board[0][2]=='_'){
+        document.getElementById("box3").innerText = 'x'
+        board[0][2]='x'
+        printBoard()
+        getMove(board)
+    }
+}
+function box4(){
+    if (board[1][0]=='_'){
+        document.getElementById("box4").innerText = 'x'
+        board[1][0]='x'
+        printBoard()
+        getMove(board)
+    }
+}
+function box5(){
+    if (board[1][1]=='_'){
+        document.getElementById("box5").innerText = 'x'
+        board[1][1]='x'
+        printBoard()
+        getMove(board)
+    }
+}
+function box6(){
+    if (board[1][2]=='_'){
+
+        document.getElementById("box6").innerText = 'x'
+        board[1][2]='x'
+        printBoard()
+        getMove(board)
+    }
+}
+function box7(){
+    if (board[2][0]=='_'){
+
+        document.getElementById("box7").innerText = 'x'
+        board[2][0]='x'
+        printBoard()
+        getMove(board)
+    }
+}
+function box8(){
+    if (board[2][1]=='_'){
+
+        document.getElementById("box8").innerText = 'x'
+        board[2][1]='x'
+        printBoard()
+        getMove(board)
+    }
+}
+function box9(){
+    if (board[2][2]=='_'){
+
+        document.getElementById("box9").innerText = 'x'
+        board[2][2]='x'
+        printBoard()
+        getMove(board)
+    }
+}
+
