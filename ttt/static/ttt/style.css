@@ -14,7 +14,8 @@
   font-size: 100px;
   font-family: sans-serif;
 	width: 100vw;
-	height: 100vh;
+	height: 50vh;
+  margin-top: 10vh;
 	display: grid;
 	justify-content: center;
 	align-content: center;
