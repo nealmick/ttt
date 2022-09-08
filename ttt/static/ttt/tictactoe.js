@@ -46,8 +46,12 @@ function getMove(board){
             updateBoard(board,res)
             printBoard()
             updateView(board)
-            if(rw!='_' && rw!='null'){
+            if(rw=='x' || rw =='o'){
                 document.getElementById("winner").innerText = 'winner is: '+rw
+                winner = rw
+            }
+            if(rw=='t'){
+                document.getElementById("winner").innerText = 'Tie Game!'
                 winner = rw
             }
 
