@@ -79,7 +79,7 @@ def getMove(board):
 
 
 
-
+#converts board to -1 0 1
 def convertBoard(board):
     for foo in range(len(board)):
         for oof in range(len(board[foo])):
@@ -93,7 +93,7 @@ def convertBoard(board):
             if board[foo][oof] == '-':
                 board[foo][oof] = 0
 
-
+#converts boart to x o _
 def convertBackBoard(board):
     print(board)
     for foo in range(len(board)):
