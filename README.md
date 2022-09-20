@@ -5,7 +5,7 @@ The board state is stored using a 3 x 3 array.  Each array index contains an int
 
 #### Django apps:
 1.  Mysite - Default django app.
-2.  ttt - Logic for receiving board states making move and returning board state.
+2.  ttt - Logic for receiving board states, move generation, and returning board state.
 
 Live:
 https://nealmick.com/tictactoe/
