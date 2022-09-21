@@ -9,3 +9,8 @@ The board state is stored using a 3 x 3 array.  Each array index contains an int
 
 Live:
 https://nealmick.com/tictactoe/
+
+Install:
+git clone github.com/nealmick/ttt
+pip install -r requirements.txt
+python3 manage.py runserver
