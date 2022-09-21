@@ -11,8 +11,6 @@ Live:
 https://nealmick.com/tictactoe/
 
 Install:
-'''
-git clone github.com/nealmick/ttt
-pip install -r requirements.txt
-python3 manage.py runserver
-'''
+1. git clone github.com/nealmick/ttt
+2. pip install -r requirements.txt
+3. python3 manage.py runserver
