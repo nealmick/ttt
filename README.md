@@ -10,6 +10,7 @@ The board state is stored using a 3 x 3 array.  Each array index contains an int
 
 ```bash
 git clone github.com/nealmick/ttt
+cd ttt
 pip install -r requirements.txt
 python3 manage.py runserver
 ```
