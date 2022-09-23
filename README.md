@@ -7,10 +7,12 @@ The board state is stored using a 3 x 3 array.  Each array index contains an int
 1.  Mysite - Default django app.
 2.  ttt - Logic for receiving board states, move generation, and returning board state.
 #### Install:
-1. git clone github.com/nealmick/ttt
-2. pip install -r requirements.txt
-3. python3 manage.py runserver
 
+```bash
+git clone github.com/nealmick/ttt
+pip install -r requirements.txt
+python3 manage.py runserver
+```
 Live:
 https://nealmick.com/tictactoe/
 
