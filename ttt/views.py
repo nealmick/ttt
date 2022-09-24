@@ -7,7 +7,6 @@ from venv import create
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, JsonResponse
-from math import inf as infinity
 from random import choice
 import platform
 import time
@@ -15,9 +14,6 @@ from os import system
 
 
 
-
-HUMAN = -1
-COMP = +1
 
 
 def index(request):
@@ -44,15 +40,9 @@ def move(request):
     if checkFull(board) == False and winner!='x' and winner!= 'o':
         winner = 't'
 
-
-
-
-
     return JsonResponse({'asdf': r,'winner':winner})
  
 def getResponse(board):
-    convertBackBoard(board)
-    printBoard(board)
     response=''
 
     for foo in board:
@@ -63,63 +53,36 @@ def getResponse(board):
 
 
 def getMove(board):
-    
+
+
     convertBoard(board)
-    print('asdf')
+    
+    printBoard(board)
+    makeMove(board)
     printBoard(board)
 
-
-
-    ai_turn('o', 'x',board)
-    print(board)
+    convertBackBoard(board)
 
 
 
-
-
-
-
-#converts board to -1 0 1
-def convertBoard(board):
-    for foo in range(len(board)):
-        for oof in range(len(board[foo])):
-            if board[foo][oof] == 'x':
-                board[foo][oof] = -1
-            if board[foo][oof] == 'o':
-                board[foo][oof] = 1
-                print(board[foo][oof])
-            if board[foo][oof] == '_':
-                board[foo][oof] = 0
-            if board[foo][oof] == '-':
-                board[foo][oof] = 0
-
-#converts boart to x o _
-def convertBackBoard(board):
-    print(board)
-    for foo in range(len(board)):
-        for oof in range(len(board)):
-            if board[foo][oof] == -1:
-                board[foo][oof] = 'x'
-            if board[foo][oof] == 1:
-                board[foo][oof] = 'o'
-                print(board[foo][oof])
-            if board[foo][oof] == 0:
-                board[foo][oof] = '_'
-
-
-
+#evaluation of state.
+#takes current board
+#returns +1 if computer wins -1 if human wins 0 if drawn
 def evaluate(state):
+    H = -1
+    C = +1
 
-    if wins(state, COMP):
-        score = +1
-    elif wins(state, HUMAN):
+    if wins(state, C):
+        score = 1
+    elif wins(state, H):
         score = -1
     else:
         score = 0
 
     return score
 
-
+#takes state of current board and player human or computer
+#returns true if the player has won
 def wins(state, player):
 
     win_state = [
@@ -138,191 +101,101 @@ def wins(state, player):
         return False
 
 
+#check if board is in terminal state by winner
 def game_over(state):
+    H = -1
+    C = +1
+    return wins(state, H) or wins(state, C)
 
-    return wins(state, HUMAN) or wins(state, COMP)
 
 
-def empty_cells(state):
-
+#takes board state
+#returns list of cordinates for each empty cell
+def possibleMoves(state):
     cells = []
-
     for x, row in enumerate(state):
         for y, cell in enumerate(row):
             if cell == 0:
                 cells.append([x, y])
-
     return cells
 
 
-def valid_move(x, y, board):
 
-    if [x, y] in empty_cells(board):
-        return True
+#takes board state current depth and current player
+#calls it self recursively until at terminal state or max depth
+#then returns cordinates of best move with score.
+def recursion(state, depth, player):
+    H = -1
+    C = +1
+
+    if player == 1:
+        best = [-1, -1, -1000]##max value
     else:
-        return False
+        best = [-1, -1, +1000]##min value
 
-
-def set_move(x, y, player,board):
-
-    if valid_move(x, y,board):
-        board[x][y] = player
-        return True
-    else:
-        return False
-
-
-def minimax(state, depth, player,board):
-
-    if player == COMP:
-        best = [-1, -1, -infinity]
-    else:
-        best = [-1, -1, +infinity]
-
+        
     if depth == 0 or game_over(state):
-        score = evaluate(state)
-        return [-1, -1, score]
-
-    for cell in empty_cells(board):
-        x, y = cell[0], cell[1]
+        score = evaluate(state)#set new score
+        return [-1, -1, score]#returns final score, this final node
+    for move in possibleMoves(state):#iterates possible move
+        x, y = move[0], move[1]
         state[x][y] = player
-        score = minimax(state, depth - 1, -player,board)
+        score = recursion(state, depth - 1, -player)
+        
         state[x][y] = 0
         score[0], score[1] = x, y
 
-        if player == COMP:
+        if player == C:
             if score[2] > best[2]:
                 best = score  # max value
         else:
             if score[2] < best[2]:
                 best = score  # min value
-
+    print(best)
     return best
 
 
-def clean1():
 
-    os_name = platform.system().lower()
-    if 'windows' in os_name:
-        system('cls')
-    else:
-        system('clear')
+#starts recursion if not in terminal state
+#when recursion is finished board is updated
+def makeMove(board):
+    H = -1
+    C = +1
 
-
-def render1(state, c_choice, h_choice):
-
-
-    chars = {
-        -1: h_choice,
-        +1: c_choice,
-        0: ' '
-    }
-    str_line = '---------------'
-
-    print('\n' + str_line)
-    for row in state:
-        for cell in row:
-            symbol = chars[cell]
-            print(f'| {symbol} |', end='')
-        print('\n' + str_line)
-
-
-def ai_turn(c_choice, h_choice,board):
-
-    depth = len(empty_cells(board))
-    if depth == 0 or game_over(board):
+    depth = len(possibleMoves(board))
+    if depth == 0 or game_over(board):#if in terminal state
         return
 
-    clean1()
-    print(f'Computer turn [{c_choice}]')
-    render1(board, c_choice, h_choice)
+    move = recursion(board, depth, C)#get move from minimax
+    x, y = move[0], move[1] ##set xy cords
+    board[x][y] = 1##make move 1 for o
 
-    if depth == 9:
-        x = choice([0, 1, 2])
-        y = choice([0, 1, 2])
-    else:
-        move = minimax(board, depth, COMP,board)
-        x, y = move[0], move[1]
+##converts board to 1,0,-1 from o,_,x
+def convertBoard(board):
+    for foo in range(len(board)):
+        for oof in range(len(board[foo])):
+            if board[foo][oof] == 'x':
+                board[foo][oof] = -1
+            if board[foo][oof] == 'o':
+                board[foo][oof] = 1
+            if board[foo][oof] == '_':
+                board[foo][oof] = 0
+            if board[foo][oof] == '-':
+                board[foo][oof] = 0
 
-    set_move(x, y, COMP,board)
-    time.sleep(1)
+##converts board to o,_,x from 1,0,-1
+def convertBackBoard(board):
+    for foo in range(len(board)):
+        for oof in range(len(board)):
+            if board[foo][oof] == -1:
+                board[foo][oof] = 'x'
+            if board[foo][oof] == 1:
+                board[foo][oof] = 'o'
+            if board[foo][oof] == 0:
+                board[foo][oof] = '_'
 
-def test(depth,board,best,root):
-
-    if depth % 2 != 0:
-        team ='x'
-        score = -10000
-
-    else:
-        team = 'o'
-        score = 10000
-    if depth > 0 and won(board) == None and checkFull(board):
-
-
-        if depth == 99:
-            print('#########################')
-            print(best)
-            printBoard(best[1])
-            root = board
-
-        moves = possibleMoves(board,team)
-        for move in moves:
-            #printBoard(move)
-            test(depth-1,move,best,root)
-    elif won(board) == 'x':
-        score -=100
-    elif won(board) == 'o':
-        score +=10
-    if score >best[0]:
-        best[0] = score
-        best[1] = root
-        print('updated')
-    return best
-    
-
-
-def fn(depth,board):
-    score=evaluate(board)
-    if depth >0:
-        moves = possibleMoves(board,'o')
-        for move in moves:
-            printBoard(move)
-            score = fn(depth-1,move)
-
-
-
-    return score
-
-
-
-
-def possibleMoves(board,team):
-    counter = 0
-    moves = []
-    for foo in range(0,3):
-        for oof in range(0,3):
-            if(board[foo][oof]=='_'):
-                x = copy.deepcopy(board)
-                x[foo][oof]=team
-                moves.append(x)
-                counter+=1
-                
-    return moves
-    
-
-'''
-def evaluate(board):
-
-    if won(board)=='o':
-        score = +1
-    elif won(board)=='x':
-        score = -1
-    else:
-        score = 0
-
-    return score
-'''
-
+##check winner give board with x_o
+##returns string x o or _ depending on winner
 def won(board):
     winner = '_'
     #horizontal
@@ -355,13 +228,10 @@ def won(board):
         if board[0][0]==team and board[1][1]==team and board[2][2]==team:
             return team
         if board[2][0]==team and board[1][1]==team and board[0][2]==team:
-            
             return team
 
 
-
-
-
+#makes random move of o
 def randMove(board):
     if checkFull(board):
         searching = True
@@ -372,144 +242,32 @@ def randMove(board):
             if(board[num1][num2]=='_'):
                 searching = False
                 board[num1][num2]='o'
-
-
     return board
+
+#check if board is full returns true/false
 def checkFull(board):
     found = False
     for foo in board:
         for oof in foo:
             if oof =='_':
                 found=True
-
     return found
-
+#updates the board given a string from url
 def updateBoard(board, url):
     count = 0
     for foo in range(0,3):
         for oof in range(0,3):
             board[foo][oof]=url[count]
             count+=1
-
-
+#creates a 3 x 3 array with each index inialized to _
 def createBoard(board):
-
     for foo in range(0,3):
         board.append([])
         for oof in range(0,3):
             board[foo].append('-')
 
-
-
-
+#prints board in lines
 def printBoard(board):
     for line in board:
         print(line)
 
-
-
-
-
-
-'''
-def test(board):
-
-    ###
-
-    ###moves {1 : {move: baord, pissibleMoves : { ... }}}
-
-
-    moves = possibleMoves(board,'o')
-    moves = getNext(moves)
-    moves = removeL(moves)
-    remove_(moves)
-    for move in moves:
-        printBoard(moves[move]['move'])
-        board = moves[move]['move']
-    #for move3 in moves[move]['possibleMoves'][move2]['possibleMoves']:
-    #printBoard(moves[0]['possibleMoves'][0]['possibleMoves'][0]['move'])
-
-
-    #print(moves)
-
-
-    #board = randMove(board)
-    return board
-
-
-
-def remove_(moves):
-    finalMoves = copy.deepcopy(moves)
-
-
-
-    
-    return finalMoves
-
-def removeL(moves):
-    finalMoves = copy.deepcopy(moves)
-    for move in moves:
-        winner = won(moves[move]['move'])
-        if winner == 'x':
-            print(winner)
-            finalMoves.pop(move,None)
-        for move2 in moves[move]['possibleMoves']:
-            winner = won(moves[move]['possibleMoves'][move2]['move'])
-            if winner == 'x':
-                print(winner)
-                finalMoves.pop(move,None)
-            for move3 in moves[move]['possibleMoves'][move2]['possibleMoves']:
-                winner = won(moves[move]['possibleMoves'][move2]['possibleMoves'][move3]['move'])
-                if winner == 'x':
-                    try:
-                        finalMoves.pop(move,None)
-                    except KeyError:
-                        print('already removed  ')
-                    
-                for move4 in moves[move]['possibleMoves'][move2]['possibleMoves'][move3]['possibleMoves']:
-                        winner = won(moves[move]['possibleMoves'][move2]['possibleMoves'][move3]['possibleMoves'][move4]['move'])
-                        if winner == 'x':
-                            print(winner)
-                            try:
-                                finalMoves.pop(move,None)
-                            except KeyError:
-                                print('already removed  ')
-
-
-    return finalMoves
-
-
-
-def getNext(moves):
-    
-    for move in moves:
-        currentMove = moves[move]['move']
-        moves[move]['possibleMoves'].update(possibleMoves(currentMove,'x'))
-
-        for move2 in moves[move]['possibleMoves']:
-            currentMove2 = moves[move]['possibleMoves'][move2]['move']
-            moves[move]['possibleMoves'][move2]['possibleMoves'].update(possibleMoves(currentMove2,'o'))
-            for move3 in moves[move]['possibleMoves'][move2]['possibleMoves']:
-                moves[move]['possibleMoves'][move2]['possibleMoves'][move3]['possibleMoves'].update(possibleMoves(currentMove2,'x'))
-                for move4 in moves[move]['possibleMoves'][move2]['possibleMoves'][move3]['possibleMoves']:
-                    moves[move]['possibleMoves'][move2]['possibleMoves'][move3]['possibleMoves'][move4]['possibleMoves'].update(possibleMoves(currentMove2,'x'))
-
-    return moves
-    
-
-
-def possibleMoves(board,team):
-    moves = {}
-    counter = 0
-    for foo in range(0,3):
-        for oof in range(0,3):
-            if(board[foo][oof]=='_'):
-                x = copy.deepcopy(board)
-                x[foo][oof]=team
-                moves.update({counter: {'move':x,'possibleMoves':{}}})
-                counter+=1
-                
-                
-    return moves
-
-'''

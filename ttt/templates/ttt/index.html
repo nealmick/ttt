@@ -5,25 +5,30 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-	   	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-		<link rel="stylesheet" type="text/css" href="{% static 'ttt/style.css'%}">
+	    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <!-- icons -->
+        <link href="{% static 'ttt/style.css'%}" rel="stylesheet">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
 	</head>
 	<body style="background-color:#383838;">
 
 
 
-    <title>Tic Tac Toe!</title>
+    <title>TicTacToe</title>
     <center>
     
     
     <h1 id='winner' style="  
     color: #17a2b8;
     font-size: 75px;
-    font-family: sans-serif;">Tic Tac Toe!</h1>
+    font-family: sans-serif;">TicTacToe!</h1>
     </center>
         <div class="board asdf" id="board">
             <div class="cell" id='box1' data-cell  onclick="box1()"></div>
@@ -40,13 +45,13 @@
 
         <div class="bottom-left">
             <button id="print-btn" class="btn btn-outline-info" onclick="printBoard()">print</button>
+            <button class="btn btn-outline-info " id="reset-btn" onclick="restart()">Restart</button>
 
         </div>
 
 
-
-
         <script  src="{% static 'ttt/tictactoe.js'%}"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 	</body>
 </html> 

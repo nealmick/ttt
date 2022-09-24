@@ -9,6 +9,9 @@ let y = 3;
 
 let winner = '_'
 let board = [];
+
+let state = 1
+
 board =createBoard(board,x,y)
 
 
@@ -22,16 +25,21 @@ console.log(board)
 printBoard()
 
 
+function restart(){
+  location.reload();
+
+}
+
 
 
 
 function getMove(board){
     let fasdf = prepareSend(board)
+    state=2
     $.ajax(
       {
           type:"GET",
-          url: "/ttt/move/",
-          async: true,
+          url: "/tictactoe/ttt/move/",
           
           dataType: 'json',
           data:{
@@ -42,7 +50,7 @@ function getMove(board){
             rw = String(asdf.winner)
   
             
-            console.log('response:',res)
+            //console.log('response:',res)
             updateBoard(board,res)
             printBoard()
             updateView(board)
@@ -55,7 +63,7 @@ function getMove(board){
                 winner = rw
             }
 
-
+            state = 1
 
             //board.move(fasdf[0]+fasdf[1].toUpperCase()+'-'+ fasdf[2]+fasdf[3].toUpperCase() )
             
@@ -132,7 +140,7 @@ function printBoard(){
         bigString+=pString+'\n'
         pString = "";
     }
-    console.log(bigString)
+    //console.log(bigString)
 }
 
 function createBoard(board,x,y){
@@ -148,7 +156,7 @@ function createBoard(board,x,y){
 
 
 function box1(){
-    if (board[0][0]=='_'&& winner=='_'){
+    if (board[0][0]=='_'&& winner=='_'&& state==1){
         document.getElementById("box1").innerText = 'x'
         board[0][0]='x'
         printBoard()
@@ -157,7 +165,7 @@ function box1(){
 }
 
 function box2(){
-    if (board[0][1]=='_'&& winner=='_'){
+    if (board[0][1]=='_'&& winner=='_'&& state==1){
       document.getElementById("box2").innerText = 'x'
         board[0][1]='x'
         printBoard()
@@ -165,7 +173,7 @@ function box2(){
     }
 }
 function box3(){
-    if (board[0][2]=='_'&& winner=='_'){
+    if (board[0][2]=='_'&& winner=='_'&& state==1){
         document.getElementById("box3").innerText = 'x'
         board[0][2]='x'
         printBoard()
@@ -173,7 +181,7 @@ function box3(){
     }
 }
 function box4(){
-    if (board[1][0]=='_'&& winner=='_'){
+    if (board[1][0]=='_'&& winner=='_'&& state==1){
         document.getElementById("box4").innerText = 'x'
         board[1][0]='x'
         printBoard()
@@ -181,7 +189,7 @@ function box4(){
     }
 }
 function box5(){
-    if (board[1][1]=='_'&& winner=='_'){
+    if (board[1][1]=='_'&& winner=='_'&& state==1){
         document.getElementById("box5").innerText = 'x'
         board[1][1]='x'
         printBoard()
@@ -189,7 +197,7 @@ function box5(){
     }
 }
 function box6(){
-    if (board[1][2]=='_'&& winner=='_'){
+    if (board[1][2]=='_'&& winner=='_'&& state==1){
 
         document.getElementById("box6").innerText = 'x'
         board[1][2]='x'
@@ -198,7 +206,7 @@ function box6(){
     }
 }
 function box7(){
-    if (board[2][0]=='_'&& winner=='_'){
+    if (board[2][0]=='_'&& winner=='_'&& state==1){
 
         document.getElementById("box7").innerText = 'x'
         board[2][0]='x'
@@ -207,7 +215,7 @@ function box7(){
     }
 }
 function box8(){
-    if (board[2][1]=='_'&& winner=='_'){
+    if (board[2][1]=='_'&& winner=='_'&& state==1){
 
         document.getElementById("box8").innerText = 'x'
         board[2][1]='x'
@@ -216,7 +224,7 @@ function box8(){
     }
 }
 function box9(){
-    if (board[2][2]=='_'&& winner=='_'){
+    if (board[2][2]=='_'&& winner=='_'&& state==1){
         document.getElementById("box9").innerText = 'x'
         board[2][2]='x'
         printBoard()

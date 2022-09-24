@@ -30,7 +30,7 @@
 .cell {
 	width: var(--cell-size);
 	height: var(--cell-size);
-	border: 1px solid black;
+	border: 1px solid #17a2b8;
 	display: flex;
 	justify-content: center;
 	align-items: center;
