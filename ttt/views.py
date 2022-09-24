@@ -53,12 +53,14 @@ def getResponse(board):
 
 
 def getMove(board):
-
-
     convertBoard(board)
-    
     printBoard(board)
-    makeMove(board)
+    if board[1][1] == 0:
+        board[1][1] = 1
+    elif len(possibleMoves(board)) ==8:
+        board[0][0] = 1
+    else:
+        makeMove(board)
     printBoard(board)
 
     convertBackBoard(board)
@@ -124,10 +126,11 @@ def possibleMoves(state):
 #takes board state current depth and current player
 #calls it self recursively until at terminal state or max depth
 #then returns cordinates of best move with score.
-def recursion(state, depth, player):
+counter = 0
+
+def recursion(state, depth, player,counter):
     H = -1
     C = +1
-
     if player == 1:
         best = [-1, -1, -1000]##max value
     else:
@@ -136,11 +139,12 @@ def recursion(state, depth, player):
         
     if depth == 0 or game_over(state):
         score = evaluate(state)#set new score
+
         return [-1, -1, score]#returns final score, this final node
     for move in possibleMoves(state):#iterates possible move
         x, y = move[0], move[1]
         state[x][y] = player
-        score = recursion(state, depth - 1, -player)
+        score = recursion(state, depth - 1, -player,counter)
         
         state[x][y] = 0
         score[0], score[1] = x, y
@@ -151,6 +155,7 @@ def recursion(state, depth, player):
         else:
             if score[2] < best[2]:
                 best = score  # min value
+        counter+=1
     return best
 
 
@@ -165,7 +170,7 @@ def makeMove(board):
     if depth == 0 or game_over(board):#if in terminal state
         return
 
-    move = recursion(board, depth, C)#get move from minimax
+    move = recursion(board, depth, C,counter)#get move from minimax
     x, y = move[0], move[1] ##set xy cords
     board[x][y] = 1##make move 1 for o
 
