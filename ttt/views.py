@@ -151,7 +151,6 @@ def recursion(state, depth, player):
         else:
             if score[2] < best[2]:
                 best = score  # min value
-    print(best)
     return best
 
 
