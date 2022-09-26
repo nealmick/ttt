@@ -1,5 +1,5 @@
 
-from typing import Counter, Dict, List, Any
+from typing import Dict, List, Any
 import sys,random
 import time, copy
 import argparse
@@ -14,6 +14,8 @@ from os import system
 
 
 
+
+
 def index(request):
     context = {}
     return render(request, 'ttt/index.html',context)
@@ -23,10 +25,16 @@ def move(request):
 
     url = request.build_absolute_uri()
     url = url.split('asdf=')[1]
+
+    #print(url)
+    
+
     board = []
+
     createBoard(board)
     updateBoard(board,url)
-    getMove(board)#get move
+
+    getMove(board)
     r = getResponse(board)
     winner = won(board)
     if checkFull(board) == False and winner!='x' and winner!= 'o':
@@ -36,6 +44,7 @@ def move(request):
  
 def getResponse(board):
     response=''
+
     for foo in board:
         for oof in foo:
             response+=oof
@@ -46,14 +55,13 @@ def getResponse(board):
 def getMove(board):
     convertBoard(board)
     printBoard(board)
-    if board[1][1] == 0:#check if middel move is taken
+    if board[1][1] == 0:
         board[1][1] = 1
-    elif len(possibleMoves(board)) ==8:#else move top left first move
+    elif len(possibleMoves(board)) ==8:
         board[0][0] = 1
     else:
         makeMove(board)
     printBoard(board)
-
 
     convertBackBoard(board)
 
@@ -66,26 +74,40 @@ def evaluate(state):
     H = -1
     C = +1
 
-    if won(state)=='c':
+    if wins(state, C):
         score = 1
-    elif won(state)=='o':
+    elif wins(state, H):
         score = -1
     else:
         score = 0
 
     return score
 
+#takes state of current board and player human or computer
+#returns true if the player has won
+def wins(state, player):
+
+    win_state = [
+        [state[0][0], state[0][1], state[0][2]],
+        [state[1][0], state[1][1], state[1][2]],
+        [state[2][0], state[2][1], state[2][2]],
+        [state[0][0], state[1][0], state[2][0]],
+        [state[0][1], state[1][1], state[2][1]],
+        [state[0][2], state[1][2], state[2][2]],
+        [state[0][0], state[1][1], state[2][2]],
+        [state[2][0], state[1][1], state[0][2]],
+    ]
+    if [player, player, player] in win_state:
+        return True
+    else:
+        return False
 
 
 #check if board is in terminal state by winner
-def gameOver(state):
+def game_over(state):
     H = -1
     C = +1
-    if won(state)=='c':
-        return True
-    elif won(state)=='o':
-        return True
-    return False
+    return wins(state, H) or wins(state, C)
 
 
 
@@ -104,8 +126,9 @@ def possibleMoves(state):
 #takes board state current depth and current player
 #calls it self recursively until at terminal state or max depth
 #then returns cordinates of best move with score.
+counter = 0
 
-def recursion(state, depth, player):
+def recursion(state, depth, player,counter):
     H = -1
     C = +1
     if player == 1:
@@ -114,15 +137,15 @@ def recursion(state, depth, player):
         best = [-1, -1, +1000]##min value
 
         
-    if depth == 0 or gameOver(state):
+    if depth == 0 or game_over(state):
         score = evaluate(state)#set new score
 
         return [-1, -1, score]#returns final score, this final node
     for move in possibleMoves(state):#iterates possible move
         x, y = move[0], move[1]
         state[x][y] = player
-        score = recursion(state, depth - 1, -player)
-
+        score = recursion(state, depth - 1, -player,counter)
+        
         state[x][y] = 0
         score[0], score[1] = x, y
 
@@ -132,7 +155,7 @@ def recursion(state, depth, player):
         else:
             if score[2] < best[2]:
                 best = score  # min value
-
+        counter+=1
     return best
 
 
@@ -144,9 +167,10 @@ def makeMove(board):
     C = +1
 
     depth = len(possibleMoves(board))
-    if depth == 0 or gameOver(board):#if in terminal state
+    if depth == 0 or game_over(board):#if in terminal state
         return
-    move = recursion(board, depth, C)#get move from minimax
+
+    move = recursion(board, depth, C,counter)#get move from minimax
     x, y = move[0], move[1] ##set xy cords
     board[x][y] = 1##make move 1 for o
 
