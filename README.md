@@ -1,7 +1,7 @@
 # Tic Tac Toe#
-#### But you never win!
+#### But you never win, checks all possible board states, and might beat you
 
-The board state is stored using a 3 x 3 array.  Each array index contains an integer of -1, 0, or 1, depending on board state X, empty, or O.  When a move is played the board is converted to a 9 character string representing the board and is then sent to the server.  The server receives the board string and converts the board back to an array.  The server then iterates through all possible board states.  This is done one at a time, recursively until there are no more possible moves.  Each final position is evaluated based on the winner and scored -1, 0, or 1.  The score is then compared to the best score found so far and updated if necessary.  Once all moves have been evaluated the best move is played and the board state is sent back to the front end.
+A TicTacToe game has over 10,000 possible board states.  The algorithm works by finding the next move leading to the desired outcome.  The board state is stored using a 3 x 3 array.   The algorithm traverses and evaluates a tree structure which contains every possible board state.  The root of the tree is the current game state.  Each branch of the tree is a possible move.  Every level of depth in the tree the player flips (MiniMax).  Eventually the branch terminates when the board is full.  Each terminal branch is scored on the winner -1, 0, or 1.  The best score is kept and updated if a higher scoring branch is found.  Once every branch is evaluated  the state with the best move is converted back to a 9 character string and sent to the front end.  All tree computation takes place on the server.  The algorithm is written in Python and uses recursion to iterate through all possible board states.  The server is a Django web application.
 
 #### Django apps:
 1.  Mysite - Default django app.
