@@ -17,6 +17,6 @@ python3 manage.py runserver
 ```
 Live:
 https://nealmick.com/tictactoe/
-
+ 
 
 <img src="https://i.imgur.com/gNTOEWa.png" width="300" height="450" />
